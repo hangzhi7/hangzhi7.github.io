@@ -143,6 +143,25 @@ table td,th{
     text-align: center;
 }
 
+.result {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.resultTitle{
+    padding: 5px 0;
+    font-size: 25px;
+    margin-top: 75px;
+    margin-bottom: 10px;
+    letter-spacing: 4px;
+}
+.content{
+    font-size: 17px;
+    padding: 5px 0;
+    letter-spacing: 2px;
+}
+
 /* 移动端样式 */
 @media (max-width: 767px) {
     .header, .footer {

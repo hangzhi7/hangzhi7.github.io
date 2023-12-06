@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MBTI人格测试</title>
-    <link rel="stylesheet" href="assets/css/mbti.css">
-    <script src="assets/js/mbti.js"></script>
+    <link rel="stylesheet" href="mbti.css">
 </head>
 <body>
 <div class="container">
@@ -54,7 +53,8 @@
                     <td colspan = "2" id="wd4">{{wd4}}</td>
 
                 </tr>
-            </table></table>
+            </table>
+            <button class="startTest" id="result">查询结果</button>
         </div>
 
 
@@ -84,7 +84,6 @@
     </div>
 
 </div>
-<script type="text/javascript" src="assets/js/mbti.js"></script>
 <script>
     const startTestBut = document.querySelector(".startTest");
     const descDiv = document.querySelector(".desc");
@@ -101,7 +100,7 @@
     let wd3_F=[]
     let wd4_J=[]
     let wd4_P=[]
-
+    let mbtiResult="";
 
     startTestBut.onclick =function (){
         descDiv.style.display = "none";
@@ -147,9 +146,20 @@
         let wd = document.querySelector(id);
         data[type1]=wd1.length;
         data[type2]=wd2.length;
-        let wd1_data = exchange(data);
-        let wd1_num = Math.max(wd1.length,wd2.length);
-        wd.innerHTML = wd1_num + "("+wd1_data[wd1_num]+")";
+        let wd_data = exchange(data);
+        let wd_num = Math.max(wd1.length,wd2.length);
+        getResult(wd_num,wd_data);
+        wd.innerHTML = wd_num + "("+wd_data[wd_num]+")";
+    }
+
+    function getResult(wd_num,wd_data){
+        let wd = wd_data[wd_num];
+        mbtiResult = mbtiResult+wd;
+    }
+
+    document.querySelector("#result").onclick = function (){
+        window.location.href = "result.html?mbti="+mbtiResult;
+        // window.location.href = "result.html?mbti=INFP";
     }
 
     function qq(num){

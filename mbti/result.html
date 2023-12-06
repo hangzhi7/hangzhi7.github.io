@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MBTI人格测试结果</title>
+    <link rel="stylesheet" href="mbti.css">
+</head>
+<body>
+
+    <div class="container">
+        <header class="header">
+            <h2>MBTI人格测试结果</h2>
+        </header>
+        <main class="main">
+            <div class="result">
+                <span class="resultTitle"></span>
+                <p class="content"></p>
+            </div>
+        </main>
+        <footer class="footer">
+            <p>&copy; 2023 小猿编程秘籍. All rights reserved.</p>
+        </footer>
+    </div>
+
+<script>
+
+    function GetQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+        var r = window.location.search.substr(1).match(reg); //获取url中"?"符后的字符串并正则匹配
+        var context = "";
+        if (r != null){
+            context = decodeURIComponent(r[2]);
+        }
+        reg = null;
+        r = null;
+        return context == null || context == "" || context == "undefined" ? "" : context;
+    }
+
+    const resultData={
+        "INFP":{
+            "en":"INFP",
+            "zh":"哲学家型",
+            "desc":"理想主义者\n" +
+                "注重价值观和使命感\n" +
+                "适应性强，个性灵活\n" +
+                "通常很包容，除非他们的价值被侵犯。"
+        },
+        "INFJ":{
+            "en":"INFJ",
+            "zh":"作家型",
+            "desc":"很好的聆听者\n" +
+                "具有同情心和观察别人的能力\n" +
+                "喜欢探究理论和物质世界背后，以及事物之间的联系及意义，但有时候极端固执"
+        },
+        "ENFP":{
+            "en":"ENFP",
+            "zh":"记者型",
+            "desc":"擅长把事情和信息联系起来，从而找到规律和解决问题的办法\n" +
+                "热情洋溢，富有想象力\n" +
+                "喜欢被人们所肯定"
+        },
+        "ENFJ":{
+            "en":"ENFJ",
+            "zh":"教育家型",
+            "desc":"卓越的沟通者和游说者\n" +
+                "热情、忠诚、积极回应他人的想法和情感需求\n" +
+                "喜欢在任何事情上给予他们的朋友劝告"
+        },
+        "INTP":{
+            "en":"INTP",
+            "zh":"学者型",
+            "desc":"喜欢研究理论和科学，有出色的想法和观察能力\n" +
+                "冷静、内敛、灵活\n" +
+                "喜欢怀疑一切，基于逻辑分析的角度进行批判"
+        },
+        "INTJ":{
+            "en":"INTJ",
+            "zh":"专家型",
+            "desc":"很容易发现外界事物的规律，并提出富有远见的观点和方法\n" +
+                "性格独立，通常在科学和思想的世界中有所成就\n" +
+                "一旦做出承诺，善于组织工作并付诸实践"
+        },
+        "ENTP":{
+            "en":"ENTP",
+            "zh":"发明家型",
+            "desc":"才思敏捷，头脑灵活，擅长创造\n" +
+                "喜欢探索解决问题的诸多可能性\n" +
+                "喜欢同时进行许多件事情，并且有能力把所有事情都做得不错"
+        },
+        "ENTJ":{
+            "en":"ENTJ",
+            "zh":"陆军元帅型",
+            "desc":"容易扮演领导者角色，具有权威性\n" +
+                "擅长设定长期目标和长远计划\n" +
+                "喜欢把自己的知识传达给别人，享受热烈的辩论过程，但有时候表达观点显得生硬"
+        },
+        "ISFJ":{
+            "en":"ISFJ",
+            "zh":"照顾者型",
+            "desc":"具有强烈的责任感，恪守承诺\n" +
+                "通常对生命中弱小的人物特别关心\n" +
+                "忠诚、体贴、友善\n" +
+                "在工作中维持与他人的和谐关系"
+        },
+        "ISTJ":{
+            "en":"ISTJ",
+            "zh":"公务员型",
+            "desc":"非常负责任和可靠\n" +
+                "比较安静，不喜欢被打扰\n" +
+                "严肃、冷静、做事井井有条，专注而细腻\n" +
+                "擅长对当前要做的事进行逻辑分析"
+        },
+        "ESFJ":{
+            "en":"ESFJ",
+            "zh":"协调者型",
+            "desc":"重视感情关系中的和谐，经常对他人表示善意\n" +
+                "愿意合作，准时完成交付的任务\n" +
+                "关注微笑的细节\n" +
+                "喜欢听到认同和赞美"
+        },
+        "ESTJ":{
+            "en":"ESTJ",
+            "zh":"监督者型",
+            "desc":"负责任，重视权威和指挥体系\n" +
+                "果断，有决断力，凡事都有自己的逻辑标准，并且以此严格要求自己或别人\n" +
+                "推行自己的计划时比较强硬"
+        },
+        "ISFP":{
+            "en":"ISFP",
+            "zh":"艺术家型",
+            "desc":"拥有强烈的艺术气息\n" +
+                "喜欢拥有自己独特的时间和空间架构\n" +
+                "冷静、敏感、友善\n" +
+                "为了避免冲突而不把自己的意见和价值观强加于人"
+        },
+        "ISTP":{
+            "en":"ISTP",
+            "zh":"冒险家型",
+            "desc":"动手能力强，为了自己的兴趣而活\n" +
+                "喜欢分析事情的原因，对事情的因果关系感兴趣\n" +
+                "逻辑感强\n" +
+                "非常重视他们的个人空间，看重工作效率"
+        },
+        "ESFP":{
+            "en":"ESFP",
+            "zh":"表演者型",
+            "desc":"喜欢当众表演带来的兴奋感\n" +
+                "乐观开朗，善于传播喜悦，活泼机智，对生活充满热情，享受工作的过程\n" +
+                "包容、随和、做事灵活\n" +
+                "善于适应新的环境"
+        },
+        "ESTP":{
+            "en":"ESTP",
+            "zh":"挑战者型",
+            "desc":"追求刺激、兴奋和每件事情中的多样性\n" +
+                "相信行动，不相信理论，喜欢看到即时的结果\n" +
+                "对理论和抽象的事物可能感到厌烦，只喜欢积极行动去解决问题"
+        },
+
+    };
+
+    let mbtiResult = GetQueryString("mbti");
+    let resultDatum = resultData[mbtiResult];
+    document.querySelector(".resultTitle").innerText = resultDatum.zh+"("+resultDatum.en+")";
+    document.querySelector(".content").innerText = resultDatum.desc;
+
+</script>
+</body>
+</html>
