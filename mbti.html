@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MBTI人格测试</title>
+    <link rel="stylesheet" href="assets/css/mbti.css">
+    <script src="assets/js/mbti.js"></script>
+</head>
+<body>
+<div class="container">
+    <header class="header">
+        <h3>MBTI人格测试</h3>
+        <p>人格测试的目的在于帮助人们了解自己，从而更好地为自己规划未来的人生。</p>
+    </header>
+    <main class="main">
+        <div class="desc">
+            <p>有4个维度的问题，每组维度有9道题，每道题有2个描述，请你对这两描述进行二选一。</p>
+            <button class="startTest">开始测试</button>
+        </div>
+        <div class="questions" style="display: none;">
+        </div>
+
+        <div class="finish"  style="display: none;">
+            <span >测试结果</span>
+            <table >
+                <tr>
+                    <th></th>
+                    <th>E</th>
+                    <th>I</th>
+                    <th>S</th>
+                    <th>N</th>
+                    <th>T</th>
+                    <th>F</th>
+                    <th>J</th>
+                    <th>P</th>
+                </tr>
+                <tr>
+                    <td>得分</td>
+                    <td id="E">{{E}}</td>
+                    <td id="I">{{I}}</td>
+                    <td id="S">{{S}}</td>
+                    <td id="N">{{N}}</td>
+                    <td id="T">{{T}}</td>
+                    <td id="F">{{F}}</td>
+                    <td id="J">{{J}}</td>
+                    <td id="P">{{P}}</td>
+                </tr>
+                <tr>
+                    <td>类型</td>
+                    <td colspan = "2" id="wd1">{{wd1}}</td>
+                    <td colspan = "2" id="wd2">{{wd2}}</td>
+                    <td colspan = "2" id="wd3">{{wd3}}</td>
+                    <td colspan = "2" id="wd4">{{wd4}}</td>
+
+                </tr>
+            </table></table>
+        </div>
+
+
+    </main>
+    <footer class="footer">
+        <p>&copy; 2023 小猿编程秘籍. All rights reserved.</p>
+    </footer>
+
+    <div id="template" style="display: none;">
+        <div class="wd" >
+            <span class="wdTitle">{{wd}}</span>
+            <hr class="xian"/>
+            <span class="msg" style="display: none;"></span>
+            <div class="num">
+                <span>{{num}}</span>
+            </div>
+            <div class="option">
+                <label>
+                    <input type="radio" name="q" value="{{option1Val}}"/> {{option1}}
+                </label>
+                <label>
+                    <input type="radio" name="q" value="{{option2Val}}"/> {{option2}}
+                </label>
+            </div>
+            <button class="submit">提交</button>
+        </div>
+    </div>
+
+</div>
+<script type="text/javascript" src="assets/js/mbti.js"></script>
+<script>
+    const startTestBut = document.querySelector(".startTest");
+    const descDiv = document.querySelector(".desc");
+    let questionsDiv = document.querySelector(".questions");
+    let finish = document.querySelector(".finish");
+
+
+    let i = 0;
+    let wd1_E=[]
+    let wd1_I=[]
+    let wd2_S=[]
+    let wd2_N=[]
+    let wd3_T=[]
+    let wd3_F=[]
+    let wd4_J=[]
+    let wd4_P=[]
+
+
+    startTestBut.onclick =function (){
+        descDiv.style.display = "none";
+        questionsDiv.innerHTML = q(i);
+        questionsDiv.style.display = "block";
+        qq(i)
+    }
+
+    //交换字典的键值对
+    function exchange(wd_data){
+
+        for (let k in wd_data) {
+            let value = wd_data[k];
+            wd_data[value] = k;
+            delete wd_data[k];
+        }
+        return wd_data
+    }
+
+    function table_data(){
+        addScore("#E",wd1_E);
+        addScore("#I",wd1_I);
+        addScore("#S",wd2_S);
+        addScore("#N",wd2_N);
+        addScore("#T",wd3_T);
+        addScore("#F",wd3_F);
+        addScore("#J",wd4_J);
+        addScore("#P",wd4_P);
+
+        addType("#wd1","E","I",wd1_E,wd1_I,{"E":"","I":""})
+        addType("#wd2","S","N",wd2_S,wd2_N,{"S":"","N":""})
+        addType("#wd3","T","F",wd3_T,wd3_F,{"T":"","F":""})
+        addType("#wd4","J","P",wd4_J,wd4_P,{"J":"","P":""})
+
+    }
+
+    function addScore(id,wd){
+        let tdE = document.querySelector(id);
+        tdE.innerHTML = wd.length;
+    }
+
+    function addType(id,type1,type2,wd1,wd2,data){
+        let wd = document.querySelector(id);
+        data[type1]=wd1.length;
+        data[type2]=wd2.length;
+        let wd1_data = exchange(data);
+        let wd1_num = Math.max(wd1.length,wd2.length);
+        wd.innerHTML = wd1_num + "("+wd1_data[wd1_num]+")";
+    }
+
+    function qq(num){
+
+        let selected = false;
+        let selectedVal = "";
+        const questionInputs = document.querySelectorAll(".wd input");
+        const msg = document.querySelector(".msg");
+
+        const submitBut = document.querySelector(".submit");
+        submitBut.onclick = function (){
+            console.log("submit ==" + selected +" == "+ selectedVal)
+            if (!selected){
+                msg.innerHTML = "请你对这两描述进行二选一";
+                msg.style.display = "block";
+                return;
+            }
+
+            pushData(selectedVal);
+
+            num = num+1;
+            if (data.length <= num){
+                table_data()
+                questionsDiv.style.display = "none";
+                finish.style.display = "flex";
+
+            }else {
+                questionsDiv.innerHTML = q(num);
+                qq(num);
+            }
+
+        }
+
+        Array.prototype.forEach.call(questionInputs, function (input) {
+            input.addEventListener("change", function () {
+                console.log("change: "+input.value)
+                selected = true;
+                selectedVal = input.value;
+                msg.classList.remove("msg");
+                msg.innerHTML = "";
+                submitBut.style.background = "#bedaff";
+                submitBut.style.borderColor= "#bedaff";
+                submitBut.style.color = "#3c7eff";
+            })
+        })
+    }
+
+    function pushData(selectedVal){
+        switch (selectedVal){
+            case "E":
+                wd1_E.push(selectedVal)
+                break;
+            case "I":
+                wd1_I.push(selectedVal)
+                break;
+            case "S":
+                wd2_S.push(selectedVal)
+                break;
+            case "N":
+                wd2_N.push(selectedVal)
+                break;
+            case "T":
+                wd3_T.push(selectedVal)
+                break;
+            case "F":
+                wd3_F.push(selectedVal)
+                break;
+            case "J":
+                wd4_J.push(selectedVal)
+                break;
+            case "P":
+                wd4_P.push(selectedVal)
+                break;
+        }
+    }
+
+    function q(num) {
+        const templateElement = document.querySelector("#template");
+        let templateHTML = templateElement.innerHTML;
+        let placeholders = data[num]
+
+        for (let placeholder in placeholders) {
+            if (placeholders.hasOwnProperty(placeholder)) {
+                templateHTML = templateHTML.replace(placeholder, placeholders[placeholder]);
+            }
+        }
+        return templateHTML;
+    }
+
+    const data=[
+        {
+            "{{wd}}":"第一个维度：外向(E)或内向(I)",
+            "{{num}}":"第  1  题：",
+            "{{option1}}":"你是否更加关注外部世界，将注意力聚集于外部的人和事物上？",
+            "{{option1Val}}":"E",
+            "{{option2}}":"你是否更加关注内心世界，注重自己的内心体验？",
+            "{{option2Val}}":"I",
+        },
+        {
+            "{{wd}}":"第一个维度：外向(E)或内向(I)",
+            "{{num}}":"第  2  题:",
+            "{{option1}}":"你是否先行动，然后（可能）再做出思考？",
+            "{{option1Val}}":"E",
+            "{{option2}}":"你是否先思考，然后（可能）再做出决定？",
+            "{{option2Val}}":"I",
+        },
+        {
+            "{{wd}}":"第一个维度：外向(E)或内向(I)",
+            "{{num}}":"第  3  题:",
+            "{{option1}}":"你是否经常发现自己自言自语？",
+            "{{option1Val}}":"E",
+            "{{option2}}":"你是否发现自己在开口说话前会想很多？",
+            "{{option2Val}}":"I",
+        },
+        {
+            "{{wd}}":"第一个维度：外向(E)或内向(I)",
+            "{{num}}":"第  4  题:",
+            "{{option1}}":"你是否发现自己通过与他人接触获得了巨大的能量？",
+            "{{option1Val}}":"E",
+            "{{option2}}":"你是否发现与他人接触会耗光你的精力，因此你需要一段时间的休息？",
+            "{{option2Val}}":"I",
+        },
+        {
+            "{{wd}}":"第一个维度：外向(E)或内向(I)",
+            "{{num}}":"第  5  题:",
+            "{{option1}}":"你是否有广泛的爱好？",
+            "{{option1Val}}":"E",
+            "{{option2}}":"你是否有少数深入的爱好？",
+            "{{option2Val}}":"I",
+        },
+        {
+            "{{wd}}":"第一个维度：外向(E)或内向(I)",
+            "{{num}}":"第  6  题:",
+            "{{option1}}":"你是否认为自己人缘广，能够轻松地与他人见面和交谈？",
+            "{{option1Val}}":"E",
+            "{{option2}}":"你是否在朋友与泛泛之交的人之间能划出明显的界限，并且有的时候难以与他人交谈？",
+            "{{option2Val}}":"I",
+        },
+        {
+            "{{wd}}":"第一个维度：外向(E)或内向(I)",
+            "{{num}}":"第  7  题:",
+            "{{option1}}":"你是否非常关注发生在自己周围的事情，并且不介意被打扰？",
+            "{{option1Val}}":"E",
+            "{{option2}}":"你是否讨厌被打扰，并且更喜欢独处？",
+            "{{option2Val}}":"I",
+        },
+        {
+            "{{wd}}":"第一个维度：外向(E)或内向(I)",
+            "{{num}}":"第  8  题:",
+            "{{option1}}":"你是否非常乐意将自己的想法和感受与他人分享？",
+            "{{option1Val}}":"E",
+            "{{option2}}":"你是否只有在被他人问起时，才会分享自己的想法与感受？",
+            "{{option2Val}}":"I",
+        },
+        {
+            "{{wd}}":"第一个维度：外向(E)或内向(I)",
+            "{{num}}":"第  9  题:",
+            "{{option1}}":"你是否主要通过实践和讨论来学习？",
+            "{{option1Val}}":"E",
+            "{{option2}}":"你是否主要通过思考和“思想实践”来学习？",
+            "{{option2Val}}":"I",
+        },
+        {
+            "{{wd}}":"第二维度：感觉(S)或直觉(N)",
+            "{{num}}":"第  1  题：",
+            "{{option1}}":"你是否对某种情况的事实更加感兴趣？",
+            "{{option1Val}}":"S",
+            "{{option2}}":"你是否对某种情况的可能性更加感兴趣？",
+            "{{option2Val}}":"N",
+        },
+        {
+            "{{wd}}":"第二维度：感觉(S)或直觉(N)",
+            "{{num}}":"第  2  题:",
+            "{{option1}}":"你是否关注事情的细节？",
+            "{{option1Val}}":"S",
+            "{{option2}}":"你是否留意事情的规律？",
+            "{{option2Val}}":"N",
+        },
+        {
+            "{{wd}}":"第二维度：感觉(S)或直觉(N)",
+            "{{num}}":"第  3  题:",
+            "{{option1}}":"你是否对日常工作更有耐心？",
+            "{{option1Val}}":"S",
+            "{{option2}}":"你是否对复杂工作更感兴趣？",
+            "{{option2Val}}":"N",
+        },
+        {
+            "{{wd}}":"第二维度：感觉(S)或直觉(N)",
+            "{{num}}":"第  4  题:",
+            "{{option1}}":"人们对你的评价是否更多的是理智、现实、实事求是和务实？",
+            "{{option1Val}}":"S",
+            "{{option2}}":"人们对你的评价是否更多的是具有想象力、创新和理想主义？",
+            "{{option2Val}}":"N",
+        },
+        {
+            "{{wd}}":"第二维度：感觉(S)或直觉(N)",
+            "{{num}}":"第  5  题:",
+            "{{option1}}":"你是否更关注当下，非常留意现在发生的事情？",
+            "{{option1Val}}":"S",
+            "{{option2}}":"你是否更加注意未来，不停地想象未来会是什么样子的？",
+            "{{option2Val}}":"N",
+        },
+        {
+            "{{wd}}":"第二维度：感觉(S)或直觉(N)",
+            "{{num}}":"第  6  题:",
+            "{{option1}}":"你是否不相信自己的直觉且试图通过谨慎、按部就班的方式来证明？",
+            "{{option1Val}}":"S",
+            "{{option2}}":"当你的直觉告诉你答案时，你是否愿意忽视一些事实，凭着感觉走？",
+            "{{option2Val}}":"N",
+        },
+        {
+            "{{wd}}":"第二维度：感觉(S)或直觉(N)",
+            "{{num}}":"第  7  题:",
+            "{{option1}}":"你是否认为自己很有见识且愿意和那些也很有见识的人在一起？",
+            "{{option1Val}}":"S",
+            "{{option2}}":"你是否认为自己具有创造力且愿意和那些也很有创造力的人在一起？",
+            "{{option2Val}}":"N",
+        },
+        {
+            "{{wd}}":"第二维度：感觉(S)或直觉(N)",
+            "{{num}}":"第  8  题:",
+            "{{option1}}":"你是否发现自己只对他人话语中的表面意义做出回应？",
+            "{{option1Val}}":"S",
+            "{{option2}}":"你是否试图了解他人话语中的隐藏意义？",
+            "{{option2Val}}":"N",
+        },
+        {
+            "{{wd}}":"第二维度：感觉(S)或直觉(N)",
+            "{{num}}":"第  9  题:",
+            "{{option1}}":"你是否认为实际的经验是学习的最好方式？",
+            "{{option1Val}}":"S",
+            "{{option2}}":"你是否认为学习来自灵感和思想？",
+            "{{option2Val}}":"N",
+        },
+        {
+            "{{wd}}":"第三维度：思维(T)或情感(F)",
+            "{{num}}":"第  1  题：",
+            "{{option1}}":"你是否更喜欢使用因果逻辑来得出结论？",
+            "{{option1Val}}":"T",
+            "{{option2}}":"你是否更愿意用自己的价值观和信念来得出结论？",
+            "{{option2Val}}":"F",
+        },
+        {
+            "{{wd}}":"第三维度：思维(T)或情感(F)",
+            "{{num}}":"第2题:",
+            "{{option1}}":"你是否觉得应该客观，觉得事物不是错的就是对的？",
+            "{{option1Val}}":"T",
+            "{{option2}}":"你是否先判定自己赞同与否，因此也就更加主观？",
+            "{{option2Val}}":"F",
+        },
+        {
+            "{{wd}}":"第三维度：思维(T)或情感(F)",
+            "{{num}}":"第  3  题:",
+            "{{option1}}":"你是否会在不经意间变得客观？",
+            "{{option1Val}}":"T",
+            "{{option2}}":"你会表现得非常友好，除非你的价值观受到挑战？",
+            "{{option2Val}}":"F",
+        },
+        {
+            "{{wd}}":"第三维度：思维(T)或情感(F)",
+            "{{num}}":"第  4  题:",
+            "{{option1}}":"你是否善于分析，对事物抱有怀疑的态度？",
+            "{{option1Val}}":"T",
+            "{{option2}}":"你是否容易轻信别人，也许还有点过度包容？",
+            "{{option2Val}}":"F",
+        },
+        {
+            "{{wd}}":"第三维度：思维(T)或情感(F)",
+            "{{num}}":"第  5  题:",
+            "{{option1}}":"你是否更喜欢真相不是事实，因此有时会直截了当表达自己的观点？",
+            "{{option1Val}}":"T",
+            "{{option2}}":"你是否更喜欢事实不是真相，因此不会做出消极的评论？",
+            "{{option2Val}}":"F",
+        },
+        {
+            "{{wd}}":"第三维度：思维(T)或情感(F)",
+            "{{num}}":"第  6  题:",
+            "{{option1}}":"你是否欣赏激烈的辩论，因为这样能展现出问题的两面性？",
+            "{{option1Val}}":"T",
+            "{{option2}}":"你是否讨厌，甚至害怕冲突，并且试图让事物保持和谐？",
+            "{{option2Val}}":"F",
+        },
+        {
+            "{{wd}}":"第三维度：思维(T)或情感(F)",
+            "{{num}}":"第  7  题:",
+            "{{option1}}":"你认为的公正是否是平等的对待每个人？",
+            "{{option1Val}}":"T",
+            "{{option2}}":"你认为的公正是否是根据人们的不同需要而区别对待？",
+            "{{option2Val}}":"F",
+        },
+        {
+            "{{wd}}":"第三维度：思维(T)或情感(F)",
+            "{{num}}":"第  8  题:",
+            "{{option1}}":"你是否认为要好好工作，无论自己还是他人？",
+            "{{option1Val}}":"T",
+            "{{option2}}":"你是否乐于赞扬他人，并且也想得到别人的赞扬？",
+            "{{option2Val}}":"F",
+        },
+        {
+            "{{wd}}":"第三维度：思维(T)或情感(F)",
+            "{{num}}":"第  9  题:",
+            "{{option1}}":"你是否更加注意表现出理性，并且专注于任务？",
+            "{{option1Val}}":"T",
+            "{{option2}}":"你是否更加注意表现出富有同情心，并且专注于人际关系？",
+            "{{option2Val}}":"F",
+        },
+        {
+            "{{wd}}":"第四维度：判定(J)或知觉(P)",
+            "{{num}}":"第  1  题：",
+            "{{option1}}":"你是否更愿意制定计划和限制？",
+            "{{option1Val}}":"J",
+            "{{option2}}":"你是否更愿意试图去理解？",
+            "{{option2Val}}":"P",
+        },
+        {
+            "{{wd}}":"第四维度：判定(J)或知觉(P)",
+            "{{num}}":"第  2  题:",
+            "{{option1}}":"任务的完成是否给你带来最大的快乐？",
+            "{{option1Val}}":"J",
+            "{{option2}}":"开始一项任务是否能够给你带来最大的快乐？",
+            "{{option2Val}}":"P",
+        },
+        {
+            "{{wd}}":"第四维度：判定(J)或知觉(P)",
+            "{{num}}":"第  3  题:",
+            "{{option1}}":"你是否果断有目标？",
+            "{{option1Val}}":"J",
+            "{{option2}}":"你是否更加灵活？",
+            "{{option2Val}}":"P",
+        },
+        {
+            "{{wd}}":"第四维度：判定(J)或知觉(P)",
+            "{{num}}":"第  4  题:",
+            "{{option1}}":"你是否喜欢做决定？",
+            "{{option1Val}}":"J",
+            "{{option2}}":"你是否喜欢有各种选择？",
+            "{{option2Val}}":"P",
+        },
+        {
+            "{{wd}}":"第四维度：判定(J)或知觉(P)",
+            "{{num}}":"第  5  题:",
+            "{{option1}}":"你是否喜欢计划性和有序性？",
+            "{{option1Val}}":"J",
+            "{{option2}}":"你是否喜欢随意性？",
+            "{{option2Val}}":"P",
+        },
+        {
+            "{{wd}}":"第四维度：判定(J)或知觉(P)",
+            "{{num}}":"第  6  题:",
+            "{{option1}}":"你是否喜欢制定计划，然后根据计划做事？",
+            "{{option1Val}}":"J",
+            "{{option2}}":"你是否喜欢在事情发生的时候再想办法应对？",
+            "{{option2Val}}":"P",
+        },
+        {
+            "{{wd}}":"第四维度：判定(J)或知觉(P)",
+            "{{num}}":"第  7  题:",
+            "{{option1}}":"你是否喜欢事先做好决定，然后坚持这些决定？",
+            "{{option1Val}}":"J",
+            "{{option2}}":"你是否喜欢有多样的选择？",
+            "{{option2Val}}":"P",
+        },
+        {
+            "{{wd}}":"第四维度：判定(J)或知觉(P)",
+            "{{num}}":"第  8  题:",
+            "{{option1}}":"你是否认真对待最后的期限，然后尽早完成事情来避免最后时刻带来的压力？",
+            "{{option1Val}}":"J",
+            "{{option2}}":"你是否将最后期限看成是一种刺激，在最后时刻会充满精力？",
+            "{{option2Val}}":"P",
+        },
+        {
+            "{{wd}}":"第四维度：判定(J)或知觉(P)",
+            "{{num}}":"第  9  题:",
+            "{{option1}}":"你是否不需要信息，然后迅速做出决定？",
+            "{{option1Val}}":"J",
+            "{{option2}}":"你是否收集大量信息，而你可能并不需要这么多信息？",
+            "{{option2Val}}":"P",
+        }
+
+    ]
+</script>
+</body>
+</html>
