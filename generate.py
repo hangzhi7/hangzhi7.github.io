@@ -32,7 +32,7 @@ if __name__ == '__main__':
     urls = ['/', '/ai/', '/code/', '/his/', '/life/', '/money/', '/shop/','/about.html']
     # always, hourly, daily, weekly, monthly, yearly, never
     # default:weekly
-    changefreq = 'weekly'
+    changefreq = 'daily'
     # 0.5-1.0 之间
     priority = '0.6'
     save_path = '.'
