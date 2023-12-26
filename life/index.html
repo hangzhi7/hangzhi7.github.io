@@ -12,9 +12,15 @@
     <div  style="display: none;">
         <a id="hideA" href="https://life.mzfqy.site">生活</a>
     </div>
-    <script>
-        let hideA = document.getElementById('hideA');
-        // hideA.click()
-    </script>
+
+    <div id="footer"></div>
+
+<script src="../assets/js/jquery.min.js"></script>
+
+<script>
+    $("#footer").load("../footer.html");
+    let hideA = document.getElementById('hideA');
+    // hideA.click()
+</script>
 </body>
 </html>
